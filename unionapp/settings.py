@@ -79,10 +79,15 @@ WSGI_APPLICATION = 'unionapp.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'uniondb',
+        'USER': 'uniondb_user',
+        'PASSWORD': 'a8Dm6nOJvIGaNM2yyI92pXzJdZhTAXOP',
+        'HOST': 'dpg-d25qlnmuk2gs73bh1rh0-a',
+        'PORT': '5432',
     }
 }
+
 
 
 # Password validation
