@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: unionapp
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn unionapp.wsgi:application
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: unionapp.settings
+      - key: PYTHON_VERSION
+        value: 3.10
