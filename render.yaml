@@ -9,3 +9,6 @@ services:
         value: unionapp.settings
       - key: PYTHON_VERSION
         value: 3.10
+      - key: DATABASE_URL
+        value: postgresql://uniondb_user:a8Dm6nOJvIGaNM2yyI92pXzJdZhTAXOP@dpg-d25qlnmuk2gs73bh1rh0-a/uniondb
+  postDeployCommand: python manage.py migrate
