@@ -1,23 +1,20 @@
 import os
 from pathlib import Path
 from dotenv import load_dotenv
-from urllib.parse import quote_plus
-import mongoengine
 
-# Load environment variables from .env file
+# Load environment variables from .env
 load_dotenv()
 
 # Base directory
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Secret settings
+# SECURITY
 SECRET_KEY = os.getenv("SECRET_KEY")
 DEBUG = os.getenv("DEBUG", "False") == "True"
-
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
-    'unionapp-4vzw.onrender.com',
+    'unionapp-4vzw.onrender.com',  # Your Render app URL
 ]
 
 # Application definition
@@ -28,9 +25,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'app',  # Your app
+
+    # Third-party
     'rest_framework',
     'corsheaders',
+
+    # Your apps
+    'app',
 ]
 
 MIDDLEWARE = [
@@ -63,8 +64,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'unionapp.wsgi.application'
 
-import os
-
+# DATABASE (PostgreSQL from Supabase)
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -75,7 +75,6 @@ DATABASES = {
         'PORT': os.getenv("DB_PORT"),
     }
 }
-
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
@@ -92,7 +91,8 @@ USE_I18N = True
 USE_TZ = True
 
 # Static files
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # Required for Render
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
@@ -100,3 +100,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # CORS
 CORS_ALLOW_ALL_ORIGINS = True
 
+# Render-specific security settings (optional but recommended)
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
