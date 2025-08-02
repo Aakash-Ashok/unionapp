@@ -15,9 +15,14 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path,include
+from django.urls import path, include
+from django.http import JsonResponse
+
+def api_root(request):
+    return JsonResponse({"message": "Union App API is live"})
 
 urlpatterns = [
+    path('', api_root),  # root URL returns a simple JSON
     path('admin/', admin.site.urls),
-    path('api/',include("app.urls"))
+    path('api/', include('app.urls')),  # where your actual API lives
 ]
