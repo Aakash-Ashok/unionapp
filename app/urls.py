@@ -1,6 +1,7 @@
 from django.urls import path
-from .views import NoteListCreateView
+from .views import NoticeListCreateView, NoticeDetailView
 
 urlpatterns = [
-    path('notes/', NoteListCreateView.as_view(), name='note-list-create'),
+    path('notices/', NoticeListCreateView.as_view(), name='notice-list-create'),
+    path('notices/<int:pk>/', NoticeDetailView.as_view(), name='notice-detail'),
 ]
