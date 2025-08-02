@@ -6,9 +6,10 @@ from .serializers import NoticeSerializer
 
 class NoticeListCreateView(APIView):
     def get(self, request):
-        notices = Notice.objects.all().order_by('-posted_at')
+        notices = Notice.objects.all().order_by('-created_at')  # ✅ Use the correct field
         serializer = NoticeSerializer(notices, many=True)
         return Response(serializer.data)
+
 
     def post(self, request):
         serializer = NoticeSerializer(data=request.data)
