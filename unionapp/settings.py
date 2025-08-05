@@ -2,19 +2,25 @@ import os
 from pathlib import Path
 from dotenv import load_dotenv
 
-# Load environment variables from .env
-load_dotenv()
-
 # Base directory
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Load .env.local for development, else .env for production
+env_path = BASE_DIR / '.env.local'
+if env_path.exists():
+    load_dotenv(dotenv_path=env_path)
+else:
+    load_dotenv(dotenv_path=BASE_DIR / '.env')
 
 # SECURITY
 SECRET_KEY = os.getenv("SECRET_KEY")
 DEBUG = os.getenv("DEBUG", "False") == "True"
+print("🟢 DEBUG =", DEBUG)
+
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
-    'unionapp-4vzw.onrender.com',  # Your Render app URL
+    'unionapp-4vzw.onrender.com',  # your Render app domain
 ]
 
 # Application definition
@@ -29,8 +35,9 @@ INSTALLED_APPS = [
     # Third-party
     'rest_framework',
     'corsheaders',
+    'rest_framework.authtoken',
 
-    # Your apps
+    # Your app
     'app',
 ]
 
@@ -64,17 +71,29 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'unionapp.wsgi.application'
 
-# DATABASE (PostgreSQL from Supabase)
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv("DB_NAME"),
-        'USER': os.getenv("DB_USER"),
-        'PASSWORD': os.getenv("DB_PASSWORD"),
-        'HOST': os.getenv("DB_HOST"),
-        'PORT': os.getenv("DB_PORT"),
+# ✅ Conditional Database Setup
+USE_SQLITE = os.getenv("USE_SQLITE", "False") == "True"
+
+if USE_SQLITE:
+    print("📦 Using SQLite (local)")
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
     }
-}
+else:
+    print("🐘 Using PostgreSQL (production)")
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.getenv("DB_NAME"),
+            'USER': os.getenv("DB_USER"),
+            'PASSWORD': os.getenv("DB_PASSWORD"),
+            'HOST': os.getenv("DB_HOST"),
+            'PORT': os.getenv("DB_PORT", "5432"),
+        }
+    }
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
@@ -92,13 +111,19 @@ USE_TZ = True
 
 # Static files
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # Required for Render
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # For Render
 
-# Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# CORS
 CORS_ALLOW_ALL_ORIGINS = True
 
-# Render-specific security settings (optional but recommended)
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
+    ],
+}

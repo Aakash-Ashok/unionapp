@@ -16,13 +16,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from django.http import JsonResponse
 
-def api_root(request):
-    return JsonResponse({"message": "Union App API is live"})
+
 
 urlpatterns = [
-    path('', api_root),  # root URL returns a simple JSON
+    
     path('admin/', admin.site.urls),
     path('api/', include('app.urls')),  # where your actual API lives
 ]
