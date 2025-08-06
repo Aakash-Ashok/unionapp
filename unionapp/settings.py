@@ -1,16 +1,25 @@
 import os
-import dj_database_url
 from pathlib import Path
+from dotenv import load_dotenv
 
+# Load environment variables from .env (for local development)
+load_dotenv()
+
+# Base directory
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Strictly require SECRET_KEY in the environment (will raise KeyError if not set)
+# Required settings
 SECRET_KEY = os.environ["SECRET_KEY"]
 
-DEBUG = os.environ.get("DEBUG", "False") == "True"
+DEBUG = os.environ.get("DEBUG", "False").lower() == "true"
 
-ALLOWED_HOSTS = ["unionapp-4vzw.onrender.com", "localhost", "127.0.0.1"]
+ALLOWED_HOSTS = [
+    "unionapp-4vzw.onrender.com",  # your Render custom domain
+    "localhost",
+    "127.0.0.1",
+]
 
+# Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -37,14 +46,25 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'unionapp.urls'
 WSGI_APPLICATION = 'unionapp.wsgi.application'
 
-# Render supplies DATABASE_URL — required by dj_database_url
+# Database configuration using individual environment variables (works with Supabase)
 DATABASES = {
-    'default': dj_database_url.config(conn_max_age=600)
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ["DB_NAME"],
+        'USER': os.environ["DB_USER"],
+        'PASSWORD': os.environ["DB_PASSWORD"],
+        'HOST': os.environ["DB_HOST"],
+        'PORT': os.environ.get("DB_PORT", "5432"),
+    }
 }
 
+# Static files (for collectstatic on Render)
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
+# CORS
 CORS_ALLOW_ALL_ORIGINS = True
+
+# Misc
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
