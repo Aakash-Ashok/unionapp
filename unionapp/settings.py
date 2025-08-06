@@ -10,7 +10,7 @@ SECRET_KEY = os.environ["SECRET_KEY"]
 DEBUG = os.environ.get("DEBUG", "False") == "True"
 
 # Allowed hosts – update this to your actual Render URL
-ALLOWED_HOSTS = ["unionapp.onrender.com"]  # Replace with your Render URL
+ALLOWED_HOSTS = ["unionapp-4vzw.onrender.com"]  # Replace with your Render URL
 
 # Installed apps
 INSTALLED_APPS = [
