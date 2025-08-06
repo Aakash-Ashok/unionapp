@@ -2,17 +2,15 @@ import os
 import dj_database_url
 from pathlib import Path
 
-# Base directory
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Secret key and debug from Render environment variables
+# Strictly require SECRET_KEY in the environment (will raise KeyError if not set)
 SECRET_KEY = os.environ["SECRET_KEY"]
+
 DEBUG = os.environ.get("DEBUG", "False") == "True"
 
-# Allowed hosts – update this to your actual Render URL
-ALLOWED_HOSTS = ["unionapp-4vzw.onrender.com"]  # Replace with your Render URL
+ALLOWED_HOSTS = ["unionapp-4vzw.onrender.com", "localhost", "127.0.0.1"]
 
-# Installed apps
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -22,10 +20,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'corsheaders',
-    'app',
+    'app',  # your Django app name
 ]
 
-# Middleware
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
@@ -37,22 +34,17 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-# URLs & WSGI
 ROOT_URLCONF = 'unionapp.urls'
 WSGI_APPLICATION = 'unionapp.wsgi.application'
 
-# Supabase/PostgreSQL database configuration from DATABASE_URL env variable
+# Render supplies DATABASE_URL — required by dj_database_url
 DATABASES = {
-    'default': dj_database_url.config(conn_max_age=600, ssl_require=True)
+    'default': dj_database_url.config(conn_max_age=600)
 }
 
-# Static files (for collectstatic)
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-# CORS settings
 CORS_ALLOW_ALL_ORIGINS = True
-
-# Security
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
