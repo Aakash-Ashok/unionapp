@@ -3,24 +3,24 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from django.shortcuts import get_object_or_404
-from rest_framework.authtoken.views import ObtainAuthToken
-from .models import Announcement, Club, ClubMember, UnionMember, MediaGallery,LoginHistory
+from rest_framework.authtoken.models import Token
+from django.contrib.auth import login
+from .models import Announcement, Club, ClubMember, UnionMember, MediaGallery, LoginHistory
 from .serializers import (
     AnnouncementSerializer, ClubSerializer,
     ClubMemberSerializer, UnionMemberSerializer,
-    MediaGallerySerializer
+    MediaGallerySerializer, AdminLoginSerializer
 )
-from django.contrib.auth import login
-from rest_framework.authtoken.models import Token
-from .serializers import AdminLoginSerializer
-# ------------------- Announcement Views -------------------
-class AnnouncementListCreateAPIView(APIView):
-    permission_classes = [IsAuthenticated, IsAdminUser]
 
+# ------------------- Announcement Views -------------------
+
+class AnnouncementListCreateAPIView(APIView):
     def get(self, request):
         announcements = Announcement.objects.all().order_by('-posted_on')
         serializer = AnnouncementSerializer(announcements, many=True)
         return Response(serializer.data)
+
+    permission_classes = [IsAuthenticated, IsAdminUser]
 
     def post(self, request):
         serializer = AnnouncementSerializer(data=request.data)
@@ -30,10 +30,15 @@ class AnnouncementListCreateAPIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class AnnouncementDetailAPIView(APIView):
-    permission_classes = [IsAuthenticated, IsAdminUser]
-
     def get_object(self, pk):
         return get_object_or_404(Announcement, pk=pk)
+
+    def get(self, request, pk):
+        announcement = self.get_object(pk)
+        serializer = AnnouncementSerializer(announcement)
+        return Response(serializer.data)
+
+    permission_classes = [IsAuthenticated, IsAdminUser]
 
     def put(self, request, pk):
         announcement = self.get_object(pk)
@@ -48,14 +53,16 @@ class AnnouncementDetailAPIView(APIView):
         announcement.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-# ------------------- Club Views -------------------
-class ClubListCreateAPIView(APIView):
-    permission_classes = [IsAuthenticated, IsAdminUser]
 
+# ------------------- Club Views -------------------
+
+class ClubListCreateAPIView(APIView):
     def get(self, request):
         clubs = Club.objects.all()
         serializer = ClubSerializer(clubs, many=True)
         return Response(serializer.data)
+
+    permission_classes = [IsAuthenticated, IsAdminUser]
 
     def post(self, request):
         serializer = ClubSerializer(data=request.data)
@@ -65,10 +72,15 @@ class ClubListCreateAPIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class ClubDetailAPIView(APIView):
-    permission_classes = [IsAuthenticated, IsAdminUser]
-
     def get_object(self, pk):
         return get_object_or_404(Club, pk=pk)
+
+    def get(self, request, pk):
+        club = self.get_object(pk)
+        serializer = ClubSerializer(club)
+        return Response(serializer.data)
+
+    permission_classes = [IsAuthenticated, IsAdminUser]
 
     def put(self, request, pk):
         club = self.get_object(pk)
@@ -83,14 +95,16 @@ class ClubDetailAPIView(APIView):
         club.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-# ------------------- Club Member Views -------------------
-class ClubMemberListCreateAPIView(APIView):
-    permission_classes = [IsAuthenticated, IsAdminUser]
 
+# ------------------- Club Member Views -------------------
+
+class ClubMemberListCreateAPIView(APIView):
     def get(self, request):
         members = ClubMember.objects.all()
         serializer = ClubMemberSerializer(members, many=True)
         return Response(serializer.data)
+
+    permission_classes = [IsAuthenticated, IsAdminUser]
 
     def post(self, request):
         serializer = ClubMemberSerializer(data=request.data)
@@ -100,10 +114,15 @@ class ClubMemberListCreateAPIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class ClubMemberDetailAPIView(APIView):
-    permission_classes = [IsAuthenticated, IsAdminUser]
-
     def get_object(self, pk):
         return get_object_or_404(ClubMember, pk=pk)
+
+    def get(self, request, pk):
+        member = self.get_object(pk)
+        serializer = ClubMemberSerializer(member)
+        return Response(serializer.data)
+
+    permission_classes = [IsAuthenticated, IsAdminUser]
 
     def put(self, request, pk):
         member = self.get_object(pk)
@@ -118,14 +137,16 @@ class ClubMemberDetailAPIView(APIView):
         member.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-# ------------------- Union Member Views -------------------
-class UnionMemberListCreateAPIView(APIView):
-    permission_classes = [IsAuthenticated, IsAdminUser]
 
+# ------------------- Union Member Views -------------------
+
+class UnionMemberListCreateAPIView(APIView):
     def get(self, request):
         members = UnionMember.objects.all()
         serializer = UnionMemberSerializer(members, many=True)
         return Response(serializer.data)
+
+    permission_classes = [IsAuthenticated, IsAdminUser]
 
     def post(self, request):
         serializer = UnionMemberSerializer(data=request.data)
@@ -135,10 +156,15 @@ class UnionMemberListCreateAPIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class UnionMemberDetailAPIView(APIView):
-    permission_classes = [IsAuthenticated, IsAdminUser]
-
     def get_object(self, pk):
         return get_object_or_404(UnionMember, pk=pk)
+
+    def get(self, request, pk):
+        member = self.get_object(pk)
+        serializer = UnionMemberSerializer(member)
+        return Response(serializer.data)
+
+    permission_classes = [IsAuthenticated, IsAdminUser]
 
     def put(self, request, pk):
         member = self.get_object(pk)
@@ -153,14 +179,16 @@ class UnionMemberDetailAPIView(APIView):
         member.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-# ------------------- Media Gallery Views -------------------
-class MediaGalleryListCreateAPIView(APIView):
-    permission_classes = [IsAuthenticated, IsAdminUser]
 
+# ------------------- Media Gallery Views -------------------
+
+class MediaGalleryListCreateAPIView(APIView):
     def get(self, request):
         media = MediaGallery.objects.all().order_by('-uploaded_on')
         serializer = MediaGallerySerializer(media, many=True)
         return Response(serializer.data)
+
+    permission_classes = [IsAuthenticated, IsAdminUser]
 
     def post(self, request):
         serializer = MediaGallerySerializer(data=request.data)
@@ -170,10 +198,15 @@ class MediaGalleryListCreateAPIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class MediaGalleryDetailAPIView(APIView):
-    permission_classes = [IsAuthenticated, IsAdminUser]
-
     def get_object(self, pk):
         return get_object_or_404(MediaGallery, pk=pk)
+
+    def get(self, request, pk):
+        media = self.get_object(pk)
+        serializer = MediaGallerySerializer(media)
+        return Response(serializer.data)
+
+    permission_classes = [IsAuthenticated, IsAdminUser]
 
     def put(self, request, pk):
         media = self.get_object(pk)
@@ -189,9 +222,12 @@ class MediaGalleryDetailAPIView(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
+# ------------------- Admin Login & Logout -------------------
+
 class AdminLoginView(APIView):
-    authentication_classes = []   # <-- Important!
-    permission_classes = []   
+    authentication_classes = []
+    permission_classes = []
+
     def post(self, request):
         serializer = AdminLoginSerializer(data=request.data)
         if serializer.is_valid():
@@ -212,7 +248,6 @@ class AdminLoginView(APIView):
                 'is_superuser': user.is_superuser,
                 'user_id': user.id,
             })
-
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def get_client_ip(self, request):
@@ -224,5 +259,5 @@ class AdminLogoutView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        request.user.auth_token.delete()  # delete token
+        request.user.auth_token.delete()
         return Response({"message": "Logged out successfully"}, status=status.HTTP_200_OK)
