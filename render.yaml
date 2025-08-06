@@ -4,12 +4,3 @@ services:
     env: python
     buildCommand: pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate
     startCommand: gunicorn unionapp.wsgi:application
-    envVars:
-      - key: DJANGO_SETTINGS_MODULE
-        value: unionapp.settings
-      - key: PYTHON_VERSION
-        value: 3.10
-      - key: DATABASE_URL
-        value: postgresql://postgres:PZM8DiyuxEjzLjyV@db.kvavhvqxjhgplbotugto.supabase.co:5432/postgres
-      - key: SECRET_KEY
-        value: &vqcs50t7g3b&wi!)*!n*&1#-8vi4tdv+hzv*jj-*p_wb30&ob
