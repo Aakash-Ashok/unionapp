@@ -20,7 +20,6 @@ class AnnouncementListCreateAPIView(APIView):
         serializer = AnnouncementSerializer(announcements, many=True)
         return Response(serializer.data)
 
-    permission_classes = [IsAuthenticated, IsAdminUser]
 
     def post(self, request):
         serializer = AnnouncementSerializer(data=request.data)
@@ -38,7 +37,7 @@ class AnnouncementDetailAPIView(APIView):
         serializer = AnnouncementSerializer(announcement)
         return Response(serializer.data)
 
-    permission_classes = [IsAuthenticated, IsAdminUser]
+ 
 
     def put(self, request, pk):
         announcement = self.get_object(pk)
@@ -62,7 +61,7 @@ class ClubListCreateAPIView(APIView):
         serializer = ClubSerializer(clubs, many=True)
         return Response(serializer.data)
 
-    permission_classes = [IsAuthenticated, IsAdminUser]
+    
 
     def post(self, request):
         serializer = ClubSerializer(data=request.data)
@@ -80,8 +79,7 @@ class ClubDetailAPIView(APIView):
         serializer = ClubSerializer(club)
         return Response(serializer.data)
 
-    permission_classes = [IsAuthenticated, IsAdminUser]
-
+    
     def put(self, request, pk):
         club = self.get_object(pk)
         serializer = ClubSerializer(club, data=request.data)
@@ -104,7 +102,7 @@ class ClubMemberListCreateAPIView(APIView):
         serializer = ClubMemberSerializer(members, many=True)
         return Response(serializer.data)
 
-    permission_classes = [IsAuthenticated, IsAdminUser]
+    
 
     def post(self, request):
         serializer = ClubMemberSerializer(data=request.data)
@@ -122,7 +120,7 @@ class ClubMemberDetailAPIView(APIView):
         serializer = ClubMemberSerializer(member)
         return Response(serializer.data)
 
-    permission_classes = [IsAuthenticated, IsAdminUser]
+    
 
     def put(self, request, pk):
         member = self.get_object(pk)
@@ -146,7 +144,7 @@ class UnionMemberListCreateAPIView(APIView):
         serializer = UnionMemberSerializer(members, many=True)
         return Response(serializer.data)
 
-    permission_classes = [IsAuthenticated, IsAdminUser]
+   
 
     def post(self, request):
         serializer = UnionMemberSerializer(data=request.data)
@@ -164,8 +162,7 @@ class UnionMemberDetailAPIView(APIView):
         serializer = UnionMemberSerializer(member)
         return Response(serializer.data)
 
-    permission_classes = [IsAuthenticated, IsAdminUser]
-
+    
     def put(self, request, pk):
         member = self.get_object(pk)
         serializer = UnionMemberSerializer(member, data=request.data)
@@ -188,7 +185,7 @@ class MediaGalleryListCreateAPIView(APIView):
         serializer = MediaGallerySerializer(media, many=True)
         return Response(serializer.data)
 
-    permission_classes = [IsAuthenticated, IsAdminUser]
+    
 
     def post(self, request):
         serializer = MediaGallerySerializer(data=request.data)
@@ -206,7 +203,7 @@ class MediaGalleryDetailAPIView(APIView):
         serializer = MediaGallerySerializer(media)
         return Response(serializer.data)
 
-    permission_classes = [IsAuthenticated, IsAdminUser]
+    
 
     def put(self, request, pk):
         media = self.get_object(pk)
@@ -256,7 +253,7 @@ class AdminLoginView(APIView):
 
 
 class AdminLogoutView(APIView):
-    permission_classes = [IsAuthenticated]
+    
 
     def post(self, request):
         request.user.auth_token.delete()
