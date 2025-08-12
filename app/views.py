@@ -14,10 +14,14 @@ from .serializers import (
 
 # ------------------- Announcement Views -------------------
 
-class AnnouncementListCreateAPIView(APIView):
+class ClubMemberListCreateAPIView(APIView):
     def get(self, request):
-        announcements = Announcement.objects.all().order_by('-posted_on')
-        serializer = AnnouncementSerializer(announcements, many=True)
+        club_id = request.query_params.get('club')
+        if club_id:
+            members = ClubMember.objects.filter(club_id=club_id)
+        else:
+            members = ClubMember.objects.all()
+        serializer = ClubMemberSerializer(members, many=True)
         return Response(serializer.data)
 
 
